@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ip-reverse-app.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "ip-reverse-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "ip-reverse-app.name" . }}
+    spec:
+      containers:
+        - name: ip-reverse-app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "postgres-service.default.svc.cluster.local"
+            - name: DB_USER
+              value: "myuser"
+            - name: DB_PASS
+              value: "mypassword"
+            - name: DB_NAME
+              value: "mydb"
+            - name: DB_PORT
+              value: "5432"
